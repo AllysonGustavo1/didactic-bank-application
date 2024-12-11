@@ -1,6 +1,3 @@
-/*
- * Created on 7 Jan 2014 21:21:45 
- */
 package bank;
 
 import java.io.BufferedReader;
@@ -17,30 +14,36 @@ import bank.ui.text.UIUtils;
 
 /**
  * @author ingrid
- * 
  */
 public class BankText extends Bank {
 
+	//@ spec_public
 	protected final BufferedReader reader;
 
+	//@ ensures reader != null;
 	public BankText() {
 		this.reader = new BufferedReader(new InputStreamReader(System.in));
 	}
 
+	//@ requires atm != null && accountOperationService != null;
+	//@ ensures \result != null;
 	@Override
 	public BankInterface createATMInterface(ATM atm,
-			AccountOperationServiceImpl accountOperationService) {
+											AccountOperationServiceImpl accountOperationService) {
 		return new ATMInterface(atm, accountOperationService);
 	}
 
+	//@ requires branch != null && accountManagementService != null && accountOperationService != null;
+	//@ ensures \result != null;
 	@Override
 	public BankInterface createBranchInterface(Branch branch,
-			AccountManagementService accountManagementService,
-			AccountOperationServiceImpl accountOperationService) {
+											   AccountManagementService accountManagementService,
+											   AccountOperationServiceImpl accountOperationService) {
 		return new BranchInterface(branch, accountManagementService,
 				accountOperationService);
 	}
 
+	//@ ensures \result != null;
 	private String getMenu() {
 		StringBuffer sb = new StringBuffer();
 		for (int i = 0; i < bankInterfaces.size(); i++) {
@@ -49,7 +52,7 @@ public class BankText extends Bank {
 			if (bi instanceof BranchInterface) {
 				sb.append(((Branch) bi.getOperationLocation()).getName());
 			} else {
-				assert bi instanceof ATMInterface;
+				//@ assert bi instanceof ATMInterface;
 				sb.append("ATM ").append(bi.getOperationLocation().getNumber());
 			}
 			sb.append("\n");
@@ -60,6 +63,7 @@ public class BankText extends Bank {
 		return sb.toString();
 	}
 
+	//@ ensures true;
 	public void showUI() {
 		UIUtils uiUtils = UIUtils.INSTANCE;
 		System.out.print(getMenu());
